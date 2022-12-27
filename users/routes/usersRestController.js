@@ -20,6 +20,20 @@ const {
 } = require("../validations/userValidationService");
 const router = express.Router();
 
+router.post("/login", async (req, res) => {
+  try {
+    let user = req.body;
+    const { error } = validateLogin(user);
+    if (error)
+      return handleError(res, 400, `Joi Error: ${error.details[0].message}`);
+
+    const token = await loginUser(req.body);
+    return res.send(token);
+  } catch (error) {
+    return handleError(res, error.status || 500, error.message);
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     let user = req.body;
@@ -32,20 +46,6 @@ router.post("/", async (req, res) => {
 
     user = await registerUser(user);
     return res.status(201).send(user);
-  } catch (error) {
-    return handleError(res, error.status || 500, error.message);
-  }
-});
-
-router.post("/login", async (req, res) => {
-  try {
-    let user = req.body;
-    const { error } = validateLogin(user);
-    if (error)
-      return handleError(res, 400, `Joi Error: ${error.details[0].message}`);
-
-    const token = await loginUser(req.body);
-    return res.send(token);
   } catch (error) {
     return handleError(res, error.status || 500, error.message);
   }
