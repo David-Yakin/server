@@ -5,7 +5,7 @@ const { comparePassword } = require("../helpers/bcrypt");
 const { generateAuthToken } = require("../../auth/Providers/jwt");
 const { handleBadRequest } = require("../../utils/handleErrors");
 
-const registerUser = async (normalizedUser) => {
+const registerUser = async normalizedUser => {
   if (DB === "MONGODB") {
     try {
       const { email } = normalizedUser;
@@ -29,10 +29,12 @@ const loginUser = async ({ email, password }) => {
   if (DB === "MONGODB") {
     try {
       const user = await User.findOne({ email });
+
       if (!user)
         throw new Error("Authentication Error: Invalid email or password");
 
       const validPassword = comparePassword(password, user.password);
+
       if (!validPassword)
         throw new Error("Authentication Error: Invalid email or password");
 
@@ -59,7 +61,7 @@ const getUsers = async () => {
   return Promise.resolve("get users not in mongodb");
 };
 
-const getUser = async (userId) => {
+const getUser = async userId => {
   if (DB === "MONGODB") {
     try {
       let user = await User.findById(userId, {
@@ -88,7 +90,7 @@ const updateUser = async (userId, normalizedUser) => {
   return Promise.resolve("card update not in mongodb");
 };
 
-const changeUserBusinessStatus = async (userId) => {
+const changeUserBusinessStatus = async userId => {
   if (DB === "MONGODB") {
     try {
       return Promise.resolve(`user no. ${userId} change his business status!`);
@@ -100,7 +102,7 @@ const changeUserBusinessStatus = async (userId) => {
   return Promise.resolve("card liked not in mongodb");
 };
 
-const deleteUser = async (userId) => {
+const deleteUser = async userId => {
   if (DB === "MONGODB") {
     try {
       return Promise.resolve(`user no. ${userId} deleted!`);
